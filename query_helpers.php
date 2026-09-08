@@ -1,7 +1,6 @@
 
-include 'DBConnector.php';
-
 <?php 
+    include 'DBConnector.php';
 
     //this returns an array of what you queried in SQL
     function query_ret($conn, $sql) {
@@ -16,7 +15,7 @@ include 'DBConnector.php';
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
         }
-
+aadsads
         return $rows;
     }
 
