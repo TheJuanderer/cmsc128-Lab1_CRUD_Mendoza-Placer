@@ -9,7 +9,14 @@
     - then click create
 - import the todo_list.sql first inside the todo_db
 - import the seed.sql
-- you can finally add php
+- you can finally add php files
+
+## Running specific pages
+    - search in a google tab or search engine "http://localhost/{path of the file you want to run}" , also note that the path starts from the htdocs folder (not including htdocs) 
+
+    for example "http://localhost/my-todo/index.php"
+
+    
 
 
 
