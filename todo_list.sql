@@ -7,7 +7,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
--- create the task table 
+-- create the task table
 -- user id here later
 CREATE TABLE IF NOT EXISTS `Task` (
 	`task_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS `Task` (
 	`due_date` DATETIME NOT NULL,
 	`priority_id` INTEGER UNSIGNED NOT NULL,
 	`category_id` INTEGER UNSIGNED NOT NULL,
+	`is_done` TINYINT(1) NOT NULL DEFAULT 0,
+	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`deleted_at` DATETIME NULL DEFAULT NULL,
 	PRIMARY KEY(`task_id`)
 );
 
