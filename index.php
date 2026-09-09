@@ -54,9 +54,11 @@
         die("Error fetching tasks: " . $conn->error);
     }
 
+    // Fetch categories and priorities for the dropdown menus
     $categories = query_ret($conn, "SELECT * FROM `Category` ORDER BY category_id");
     $priorities = query_ret($conn, "SELECT * FROM `Priority` ORDER BY priority_id");
 
+    // Calculate counts for open vs. done tasks
     $open_count = 0;
     $done_count = 0;
     foreach ($tasks as $t) {
@@ -151,11 +153,12 @@
                 <?php $previous_date = null; ?>
                 <?php foreach ($tasks as $task): ?>
                     <?php
+                        // Check if task is past due and still open
                         $is_overdue = !$task['is_done'] && strtotime($task['due_date']) < time();
                         $priority_class = tag_class($task['priority_name']) === 'med' ? 'med' : tag_class($task['priority_name']);
                         $category_class = tag_class($task['category_name']);
 
-                        // bold divider whenever the due date changes from one date to another
+                        // Check for date boundaries to visually group tasks if needed
                         $task_date = date('Y-m-d', strtotime($task['due_date']));
                         $is_new_date = $previous_date !== null && $task_date !== $previous_date;
                         $previous_date = $task_date;
@@ -220,7 +223,7 @@
             </div>
         </div>
 
-        <!-- undo pop-up and action -->
+        <!-- undo toast notification -->
         <?php if ($undo_task_id): ?>
             <div class="toast" id="undo-toast">
                 <?php
@@ -248,6 +251,7 @@
                 document.getElementById('delete-modal').classList.remove('is-open');
             }
 
+            // Auto-dismiss the undo toast notification after 5 seconds
             const toast = document.getElementById('undo-toast');
             if (toast) {
                 setTimeout(() => toast.remove(), 5000);

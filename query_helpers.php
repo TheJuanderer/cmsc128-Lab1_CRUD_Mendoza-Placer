@@ -27,6 +27,7 @@
         return $result !== false;
     }
 
+    // Inserts a new task using secure prepared statements to prevent SQL injection.
     function insert_task($conn, $title, $due_date, $priority_id, $category_id) {
         $sql = "INSERT INTO `Task` (`title`, `due_date`, `priority_id`, `category_id`)
                 VALUES (?, ?, ?, ?)";
@@ -36,6 +37,7 @@
             return false;
         }
 
+        // Bind parameters ("ssii" = string, string, integer, integer)
         $stmt->bind_param("ssii", $title, $due_date, $priority_id, $category_id);
         $ok = $stmt->execute();
         $stmt->close();
@@ -43,6 +45,7 @@
         return $ok;
     }
 
+    // Retrieves a single active (non-deleted) task by its unique ID.
     function get_task($conn, $task_id) {
         $sql = "SELECT * FROM `Task` WHERE `task_id` = ? AND `deleted_at` IS NULL";
 
@@ -60,6 +63,7 @@
         return $task ?: null;
     }
 
+    // Updates existing task fields using a prepared statement.
     function update_task($conn, $task_id, $title, $due_date, $priority_id, $category_id) {
         $sql = "UPDATE `Task`
                 SET `title` = ?, `due_date` = ?, `priority_id` = ?, `category_id` = ?
@@ -70,6 +74,7 @@
             return false;
         }
 
+        // Bind parameters ("ssiii" = string, string, int, int, int)
         $stmt->bind_param("ssiii", $title, $due_date, $priority_id, $category_id, $task_id);
         $ok = $stmt->execute();
         $stmt->close();
@@ -93,6 +98,7 @@
         return $ok;
     }
 
+    // Restores a soft-deleted task by clearing the deleted_at timestamp.
     function restore_task($conn, $task_id) {
         $sql = "UPDATE `Task` SET `deleted_at` = NULL WHERE `task_id` = ?";
 
@@ -108,6 +114,7 @@
         return $ok;
     }
 
+    // Toggles a task's completion status (is_done) between true (1) and false (0).
     function toggle_task_done($conn, $task_id) {
         $sql = "UPDATE `Task` SET `is_done` = NOT `is_done` WHERE `task_id` = ?";
 
