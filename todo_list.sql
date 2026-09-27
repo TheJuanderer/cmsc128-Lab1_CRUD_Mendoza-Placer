@@ -11,6 +11,7 @@ SET time_zone = "+00:00";
 -- user id here later
 CREATE TABLE IF NOT EXISTS `Task` (
 	`task_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_id` INTEGER UNSIGNED NOT NULL,
 	`title` VARCHAR(255),
 	`due_date` DATETIME NOT NULL,
 	`priority_id` INTEGER UNSIGNED NOT NULL,
@@ -24,7 +25,16 @@ CREATE TABLE IF NOT EXISTS `Task` (
 -- this will be used for later on
 CREATE TABLE IF NOT EXISTS `User` (
 	`user_id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY(`user_id`)
+	`user_name` VARCHAR(255),
+	`user_email` VARCHAR(255),
+	-- password must be hashed before storing to this
+	`password_hash` VARCHAR(255) NOT NULL,
+	`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`deleted_at` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY(`user_id`),
+	UNIQUE KEY `uq_user_email` (`user_email`),
+	UNIQUE KEY `uq_user_username` (`user_name`)
 );
 
 
@@ -47,3 +57,7 @@ ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE `Task`
 ADD FOREIGN KEY(`priority_id`) REFERENCES `Priority`(`priority_id`)
 ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE `Task`
+ADD FOREIGN KEY(`user_id`) REFERENCES `User`(`user_id`)
+ON UPDATE CASCADE ON DELETE CASCADE 
