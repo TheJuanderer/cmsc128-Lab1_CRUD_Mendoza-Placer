@@ -1,5 +1,10 @@
 <?php
 
+// Start session for flash messages before any output
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $servername = "localhost";
 $username = "root"; //default username
 $password = ""; //default password
