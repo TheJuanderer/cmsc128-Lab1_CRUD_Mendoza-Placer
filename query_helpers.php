@@ -19,6 +19,22 @@
         return $rows;
     }
 
+    //executing a query where you dont expect an object to be returned, like when deleting, or inserting
+    function query_insert($conn, $query) {
+        $result = $conn->query($query);
+
+        if ($result === false) {
+            return false;
+        }
+
+        return $result;
+    }
+
+    function insert_user($conn, $query) {
+        $result = query_insert($conn, $query);
+        return $result;
+    }
+
 
 
     // function used for Creating, Updating and Deleting tasks

@@ -16,6 +16,14 @@
 
     for example "http://localhost/my-todo/index.php"
 
+## Running the page
+    type "http://localhost/my-todo/index.php
+
+
+## queries
+### Inserting
+    - INSERT INTO User (`user_name`, `user_email`, `password_hash`) VALUES('test', 'test@email.com', 'test_password')
+
     
 
 
