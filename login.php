@@ -1,39 +1,54 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 include 'DBConnector.php';
 include 'query_helpers.php';
 
+// If already logged in, skip the login page
+if (isset($_SESSION['user_id'])) {
+    header("Location: login_test_page.php");
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $username = $_POST['log_name'];
-    $password = $_POST['log_password'];
+    $identifier = trim($_POST['log_name'] ?? '');
+    $password = $_POST['log_password'] ?? '';
 
-    //get the user in the database
-    $sql = "SELECT * FROM User WHERE User.user_name = '$username'";
-    $user = query_ret($conn, $sql);
-
-    if ($user === false) {
-
+    if ($identifier === '' || $password === '') {
         $error['msg'] = "Invalid username or password";
-
     } else {
+        // Prevent SQL Injection while using your original query_ret function
+        $safe_username = mysqli_real_escape_string($conn, $identifier);
+        $sql = "SELECT * FROM User WHERE User.user_name = '$safe_username'";
+        $user = query_ret($conn, $sql);
 
-        if ($password === $user[0]['password_hash']) {
-
-            $_SESSION['user_id'] = $user[0]['user_id'];
-
-            header("Location: login_test_page.php");
-            exit();
-
-        } else {
+        if ($user === false || empty($user)) {
             $error['msg'] = "Invalid username or password";
+        } else {
+            // Use password_verify() to check against the secure database hash
+            if (password_verify($password, $user[0]['password_hash'])) {
+                
+                // Prevent Session Fixation attacks
+                session_regenerate_id(true);
+
+                $_SESSION['user_id'] = $user[0]['user_id'];
+
+                header("Location: login_test_page.php");
+                exit();
+
+            } else {
+                $error['msg'] = "Invalid username or password";
+            }
         }
     }
 }
+// Display and clear flash success message (e.g., from logout)
+$flash_success = $_SESSION['flash_success'] ?? null;
+unset($_SESSION['flash_success']);
 ?>
-
-
-
 
 
 <!DOCTYPE html>
@@ -55,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Password -->
                 <label name=""> Password </label>
-                <input name="log_password" type="text"> </input>
+                <input name="log_password" type="password" value="<?= htmlspecialchars($identifier) ?>">
 
                 <?php if (!empty($error['msg'])): ?>
                         <div class="field-error"><?= $error['msg'] ?></div>
