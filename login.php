@@ -11,7 +11,8 @@ if (isset($_SESSION['user_id'])) {
     header("Location: login_test_page.php");
     exit();
 }
-
+$identifier = '';
+$error = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $identifier = trim($_POST['log_name'] ?? '');
@@ -65,12 +66,15 @@ unset($_SESSION['flash_success']);
         <div class="form-card">
             <form method="POST" action="login.php">
                 <!-- Username -->
-                <label name="title"> Username </label>
-                <input name="log_name" type="text"> </input>
+                <label for="log_name">Username</label>
+                <input id="log_name" name="log_name" type="text"
+                    value="<?= htmlspecialchars($identifier ?? '') ?>"
+                    autocomplete="username">
 
                 <!-- Password -->
-                <label name=""> Password </label>
-                <input name="log_password" type="password" value="<?= htmlspecialchars($identifier) ?>">
+                <label for="log_password">Password</label>
+                <input id="log_password" name="log_password" type="password"
+                    autocomplete="current-password">
 
                 <?php if (!empty($error['msg'])): ?>
                         <div class="field-error"><?= $error['msg'] ?></div>
