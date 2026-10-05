@@ -39,7 +39,7 @@
 
     // function used for Creating, Updating and Deleting tasks
     function execute ($conn, $sql) {
-        $conn->query($sql);
+        $result = $conn->query($sql);
         return $result !== false;
     }
 
